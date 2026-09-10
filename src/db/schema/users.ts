@@ -13,6 +13,8 @@ export const usersTable = pgTable("users", {
     emailVerifactionCodeExpiry: timestamp("email_verification_code_expiry"),
     passwordResetCode: varchar("password_reset_code", { length: 255 }),
     passwordResetCodeExpiry: timestamp("password_reset_code_expiry"),
+    refreshToken: varchar("refresh_token", { length: 255 }),
+    refreshTokenExpiry: timestamp("refresh_token_expiry"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
 });

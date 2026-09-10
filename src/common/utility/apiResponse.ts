@@ -32,6 +32,7 @@ class ApiResponse {
             message,
         });
     }
+    
 }
 
 export default ApiResponse

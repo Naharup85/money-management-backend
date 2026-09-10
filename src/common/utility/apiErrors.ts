@@ -30,6 +30,9 @@ class ApiError extends Error {
     public static forbidden(message: string = 'Forbidden') {
         return new ApiError(message, 403);
     }
+    public static unauthorized(message: string = 'Unauthorized') {
+        return new ApiError(message, 401);
+    }
 
     
 }
