@@ -7,7 +7,7 @@ export const paymentTypeEnum = pgEnum("payment_type", ["cash", "bank", "card", "
 export const paymentStatusEnum = pgEnum("payment_status", ["cleared", "pending"]);
 
 export const recordsTable = pgTable("records", {
-    id: uuid("id").primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
     fromAccountId: uuid("from_account_id").notNull().references(() => accountsTable.id),
     toAccountId: uuid("to_account_id").references(() => accountsTable.id),
     amount: decimal("amount",{precision:14,scale:2}).notNull().default('0.00'),

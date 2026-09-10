@@ -27,9 +27,11 @@ class ApiError extends Error {
         return new ApiError(message, 500);
     }
 
-    public static envError(message: string = 'Environment variable not found') {
-        return new ApiError(message, 500);
+    public static forbidden(message: string = 'Forbidden') {
+        return new ApiError(message, 403);
     }
+
+    
 }
 
 export default ApiError;

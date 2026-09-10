@@ -4,7 +4,7 @@ import { usersTable } from "./users.js";
 
 export const accountTypeEnum = pgEnum("account_type", ["bank", "card", "cash", "credit_card", "investment", "other"]);
 export const accountsTable = pgTable("accounts", {
-    id: uuid("id").primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
     userId: uuid("user_id").notNull().references(() => usersTable.id),
     accountName: varchar("account_name", { length: 255 }).notNull(),
     type: accountTypeEnum("type").default("cash"),

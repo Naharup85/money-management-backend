@@ -7,20 +7,24 @@ import ApiError from "./common/utility/apiErrors.js";
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  throw ApiError.envError('DATABASE_URL is not defined');
+  throw ApiError.internalServerError('DATABASE_URL is not defined');
   process.exit(1);
 }
 
-const db = drizzle(connectionString);
+export const db = drizzle(connectionString);
 
 
 async function Main() {
-    const server = http.createServer(createApplicationServer());
-
-    const PORT = process.env.PORT || 3000;
-    server.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    })
+   try {
+     const server = http.createServer(createApplicationServer());
+ 
+     const PORT = process.env.PORT || 3000;
+     server.listen(PORT, () => {
+         console.log(`Server is running on port ${PORT}`);
+     })
+   } catch (error) {
+    throw ApiError.internalServerError("unable to start server");
+   }
 }
 
 Main();
