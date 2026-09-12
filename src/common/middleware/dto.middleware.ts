@@ -6,8 +6,11 @@ const validate = (schema:any)=>{
     return async(req:Request,res:Response,next:NextFunction)=>{
         const result=await schema.safeParseAsync(req.body);
         if(!result.success){
-            const {errors}=result.error;
-            throw ApiError.badRequest(errors.map((err:any)=>err.message));
+            const errors=result.error.issues;
+            let errString=errors.map((error:any)=>{
+                return `${error?.path[0]} ${error?.message}`;
+            }).join("\n");
+           throw ApiError.badRequest(errString);
         }
         req.body=result.data;
         next();

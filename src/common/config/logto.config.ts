@@ -5,4 +5,5 @@ export const logtoConfig = {
   issuer: `${env.LOGTO_ENDPOINT!}/oidc`,
   jwksUri: `${env.LOGTO_ENDPOINT!}/oidc/jwks`,
   audience: env.LOGTO_API_RESOURCE!,
+
 };

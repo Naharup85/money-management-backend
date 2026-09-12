@@ -1,6 +1,8 @@
 import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
 import { logtoConfig } from "../config/logto.config.js";
 import type { Request, Response, NextFunction } from "express";
+import ApiResponse from "../utility/apiResponse.js";
+import ApiError from "../utility/apiErrors.js";
 
 const jwks = createRemoteJWKSet(
   new URL(logtoConfig.jwksUri)
@@ -30,20 +32,17 @@ export const authMiddleware = async (
     const authorization = req.headers.authorization;
 
     if (!authorization) {
-      return res.status(401).json({
-        success: false,
-        message: "Authorization header is required",
-      });
+      throw  ApiError.notFound("Authorization header is required");
     }
 
     if (!authorization.startsWith("Bearer ")) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid authorization format",
-      });
+      throw  ApiError.unAuthorized("Invalid authorization format");
     }
 
     const token = authorization.substring(7);
+
+
+    
 
     const { payload } = await jwtVerify(token, jwks, {
       issuer: logtoConfig.issuer,
@@ -72,9 +71,6 @@ export const authMiddleware = async (
   } catch (error) {
     console.error("Logto authentication error:", error);
 
-    return res.status(401).json({
-      success: false,
-      message: "Invalid or expired access token",
-    });
+    throw ApiError.unAuthorized("Invalid or expired access token");
   }
 };

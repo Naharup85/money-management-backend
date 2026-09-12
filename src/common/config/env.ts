@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import ApiError from "../utility/apiErrors.js";
 dotenv.config();
 
+
 const envSchema = z.object({
     PORT: z.string().transform((val) => parseInt(val, 10)),
     LOGTO_ENDPOINT: z.string(),
@@ -15,7 +16,7 @@ const envSchema = z.object({
 export const env = (() => {
     const result = envSchema.safeParse(process.env);
     if (!result.success) {
-        console.error("Environment validation failed:",result.error.flatten().fieldErrors);
+        console.error("Environment validation failed:", result.error.message);
         throw ApiError.internalServerError("Invalid environment configuration");
     }
     return result.data;
