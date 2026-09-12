@@ -17,12 +17,6 @@ const registerDto = z.object({
     }),
     email:z.email("Please provide a valid email")
     .max(225,"Email must be at most 225 characters long"),
-    password:z.string()
-    .min(6,"Please provide a password password must be at least 6 characters long")
-    .max(225,"Password must be at most 225 characters long"),
-    confirmPassword:z.string()
-    .min(6,"Please provide a password password must be at least 6 characters long")
-    .max(225,"Password must be at most 225 characters long"),
     cashBalance:z.number().optional().default(0),
 });
 
