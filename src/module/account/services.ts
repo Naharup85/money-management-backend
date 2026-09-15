@@ -1,8 +1,8 @@
-import type { AccountDto } from "./dto.js";
+import { eq } from "drizzle-orm";
 import { db } from "../../index.js";
 import { usersTable } from "../../db/schema/users.js";
 import { accountsTable } from "../../db/schema/accounts.js";
-import { eq } from "drizzle-orm";
+import type { AccountDto,UpdateAccountDto } from "./dto.js";
 
 const createAccount = async (payload: AccountDto) => {
     const userId = payload.userId;
@@ -46,13 +46,8 @@ const getUserAccounts=async(userId:string)=>{
     });
 }
 
-const updateAccount=async(accountId:string,payload:AccountDto)=>{
-    const user=await db.select().from(usersTable).where(eq(usersTable.id,payload.userId));
-    if(!user){
-        throw new Error("User not found");
-    }
+const updateAccount=async(accountId:string,payload:UpdateAccountDto)=>{
     const account=await db.update(accountsTable).set({
-        userId:payload.userId,
         accountName:payload.name,
         type:payload.type,
         color:payload.color,
