@@ -8,27 +8,29 @@ const jwks = createRemoteJWKSet(
   new URL(logtoConfig.jwksUri)
 );
 
-export interface LogtoUser {
+export interface AuthPayload extends JWTPayload {
   sub: string;
   clientId?: string | undefined;
-  scopes: string[];
-  audience: string[];
+  scopes?: string[];
+  audience?: string[];
+  email?:string;
 }
 
 declare global {
   namespace Express {
     interface Request {
-      auth?: LogtoUser;
+      auth?: AuthPayload;
     }
   }
 }
 
-export const authMiddleware = async (
+export const requireAuth = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+  
     const authorization = req.headers.authorization;
 
     if (!authorization) {
@@ -39,11 +41,11 @@ export const authMiddleware = async (
       throw  ApiError.unAuthorized("Invalid authorization format");
     }
 
+
+
     const token = authorization.substring(7);
-
-
     
-
+    
     const { payload } = await jwtVerify(token, jwks, {
       issuer: logtoConfig.issuer,
       audience: logtoConfig.audience,
@@ -60,11 +62,13 @@ export const authMiddleware = async (
         ? [payload.aud]
         : [];
 
+
     req.auth = {
       sub: payload.sub!,
       clientId: payload.client_id as string | undefined,
       scopes,
       audience,
+      email:payload.email as string,
     };
 
     next();

@@ -1,0 +1,1 @@
+ALTER TABLE "users" RENAME COLUMN "logto_user_id" TO "logto_id";
