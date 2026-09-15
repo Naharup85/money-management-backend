@@ -15,13 +15,26 @@ const register=async(req:Request,res:Response)=>{
 //   scopes: [ '' ],
 //   audience: [ 'https://api.moneyflow' ]
 // }
-const getProfile=async(req:Request,res:Response)=>{
-  const userData=await userServices.getUserProfile(req.auth?.sub!);
+const getUser=async(req:Request,res:Response)=>{
+  const userData=await userServices.getUser(req.auth?.sub!);
   return ApiResponse.success(res,userData,"User Profile Fetch Success")
+}
+
+const updateUser=async(req:Request,res:Response)=>{
+  const userData=await userServices.updateUser(req.user?.id!,req.body);
+  return ApiResponse.success(res,userData,"User Profile Update Success")
+}
+
+const deleteUser=async(req:Request,res:Response)=>{
+  await userServices.deleteUser(req.user?.id!);
+  return ApiResponse.success(res,null,"User Deleted Successfully")
 }
 
 
 export{
     register,
-    getProfile
+    getUser,
+    updateUser,
+    deleteUser,
+
 }

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { eq } from "drizzle-orm";
 
-import type { UserRegisterDto } from "./dto.js"
+import type { UserRegisterDto, UserUpdateDto } from "./dto.js"
 import ApiError from "../../common/utility/apiErrors.js";
 import { db } from "../../index.js"
 import { usersTable } from "../../db/schema/users.js";
@@ -33,7 +33,7 @@ const register=async(userData: UserRegisterDto)=>{
 
 
 
-const getUserProfile=async(logtoId: string)=>{
+const getUser=async(logtoId: string)=>{
     const user=await db.select().from(usersTable).where(eq(usersTable.logtoId,logtoId))
     if(!user ||user.length===0){
         throw ApiError.notFound("User data not found");
@@ -50,8 +50,42 @@ const getUserProfile=async(logtoId: string)=>{
     };
 }
 
+const updateUser=async(userId: string,userData: UserUpdateDto)=>{
+    const user=await db.select().from(usersTable).where(eq(usersTable.id,userId))
+    if(!user ||user.length===0){
+        throw ApiError.notFound("User data not found");
+    }
+    const updatedUser=await db.update(usersTable).set({
+        firstName:userData.firstName,
+        lastName:userData.lastName,
+        email:userData.email,
+        cashBalance: userData.cashBalance?.toString(),
+        profilePicture:userData.profilePicture,
+        logtoId:userData.sub,
+    }).where(eq(usersTable.id,userId)).returning();
+    return {
+            id:updatedUser[0]?.id,
+            firstName:updatedUser[0]?.firstName,
+            lastName:updatedUser[0]?.lastName,
+            email:updatedUser[0]?.email,
+            cashBalance:updatedUser[0]?.cashBalance,
+            profilePicture:updatedUser[0]?.profilePicture,
+            updatedAt:updatedUser[0]?.updatedAt
+    };
+}
+
+const deleteUser=async(userId: string)=>{
+    const user=await db.delete(usersTable).where(eq(usersTable.id,userId));
+    if(!user){
+        throw ApiError.notFound("User data not found");
+    }
+    return;
+}
+
 
 export{
     register,
-    getUserProfile
+    getUser,
+    updateUser,
+    deleteUser,
 }
