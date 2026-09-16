@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { db } from "../../index.js";
 import { accountsTable } from "../../db/schema/accounts.js";
 import { recordsTable } from "../../db/schema/recods.js";
@@ -7,9 +7,8 @@ import ApiError from "../../common/utility/apiErrors.js";
 
 
 const toDbRecord = (paylod: RecordDto) => ({
-    id:paylod.id,
     fromAccountId: paylod.fromAccountId,
-    toAccountId: paylod.toAccountId,
+    toAccountId: paylod.toAccountId || null,
     amount: paylod.amount.toString(),
     type: paylod.type,
     category: parseFloat(paylod.categoryId),
@@ -23,7 +22,7 @@ const toDbRecord = (paylod: RecordDto) => ({
 
 const toDbUpdateRecord = (paylod: UpdateRecordDto) => ({
     fromAccountId: paylod.fromAccountId,
-    toAccountId: paylod.toAccountId,
+    toAccountId: paylod.toAccountId || null,
     amount: paylod.amount.toString(),
     type: paylod.type,
     category: parseFloat(paylod.categoryId),
@@ -97,54 +96,58 @@ const performTransactions = async (fromAccountId: string, toAccountId: string | 
 };
 
 const createRecord= async(paylod:RecordDto)=>{
-    const {fromAccountId,toAccountId}=paylod;
-    if(!fromAccountId) throw ApiError.badRequest("fromAccountId is required");
-    const source=await db.select().from(accountsTable).where(eq(accountsTable.id,fromAccountId));
-    if(!source[0] || !source[0].balance){
-        throw ApiError.notFound("Source account not found");
-    }
-    let destinationAccount: typeof source[0] | null = null;
-    if(toAccountId !== undefined){
-        const destination=await db.select().from(accountsTable).where(eq(accountsTable.id,toAccountId));
-        if(!destination[0] || !destination[0].balance){
-            throw ApiError.notFound("Destination account not found");
-        }
-        destinationAccount = destination[0];
-    }
-
-
-    const sourceBalance = +source[0].balance;
-    const destinationBalance = destinationAccount ? +(destinationAccount.balance) : 0;
-
-    const amount=paylod.amount;
-
-    let record:any;
-    if(paylod.paymentStatus !== "pending"){
-        record=await performTransactions(source[0].id,destinationAccount?.id,amount,paylod.type,paylod);
-    }else{
-        record=await db.insert(recordsTable).values(toDbRecord(paylod)).returning();
-    }
-    
-    if (!record || !record[0]) throw ApiError.badRequest("Failed to create record");
-
-     return {
-        id: record[0].id,
-        fromAccountId: record[0].fromAccountId,
-        toAccountId: record[0].toAccountId ?? undefined,
-        amount: parseFloat(record[0].amount),
-        type: record[0].type!,
-        categoryId: record[0].category.toString(),
-        description: record[0].description ?? undefined,
-        date: record[0].date.toISOString(),
-        note: record[0].note ?? undefined,
-        payer: record[0].payer ?? undefined,
-        paymentType: record[0].paymentType!,
-        paymentStatus: record[0].paymentStatus!,
-    };
+   try {
+     const fromAccountId=paylod.fromAccountId;
+     const toAccountId=paylod.toAccountId || null;
+     if(!fromAccountId) throw ApiError.badRequest("fromAccountId is required");
+     const source=await db.select().from(accountsTable).where(eq(accountsTable.id,fromAccountId));
+     if(!source[0] || !source[0].balance){
+         throw ApiError.notFound("Source account not found");
+     }
+     let destinationAccount: typeof source[0] | null = null;
+     if(toAccountId && toAccountId !== undefined){
+         const destination=await db.select().from(accountsTable).where(eq(accountsTable.id,toAccountId));
+         if(!destination[0] || !destination[0].balance){
+             throw ApiError.notFound("Destination account not found");
+         }
+         destinationAccount = destination[0];
+     }
+     
+ 
+ 
+     const amount=paylod.amount;
+ 
+     let record:any;
+     if(paylod.paymentStatus !== "pending"){
+         record=await performTransactions(source[0].id,destinationAccount?.id,amount,paylod.type,paylod);
+     }else{
+         record=await db.insert(recordsTable).values(toDbRecord(paylod)).returning();
+     }
+     
+     if (!record || !record[0]) throw ApiError.badRequest("Failed to create record");
+ 
+      return {
+         id: record[0].id,
+         fromAccountId: record[0].fromAccountId,
+         toAccountId: record[0].toAccountId ?? undefined,
+         amount: parseFloat(record[0].amount),
+         type: record[0].type!,
+         categoryId: record[0].category.toString(),
+         description: record[0].description ?? undefined,
+         date: record[0].date.toISOString(),
+         note: record[0].note ?? undefined,
+         payer: record[0].payer ?? undefined,
+         paymentType: record[0].paymentType!,
+         paymentStatus: record[0].paymentStatus!,
+     };
+   } catch (error) {
+    console.log("error",error);
+    throw ApiError.internalServerError("Something went wrong");
+   }
 }
 
 const getAllRecords=async()=>{
-    const records=await db.select().from(recordsTable);
+    const records=await db.select().from(recordsTable).orderBy(desc(recordsTable.date));
     return records.map((record)=>{
         return{
             id:record.id,

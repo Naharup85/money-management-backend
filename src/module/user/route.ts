@@ -10,8 +10,8 @@ const router = Router();
 
 router.post("/register",validate(registerDto), userController.register);
 router.get("/profile",loadCurrentUser,  userController.getUser)
-router.patch("/update",loadCurrentUser,validate(updateDto),userController.updateUser)
-router.delete("/delete",loadCurrentUser,userController.deleteUser);
+router.patch("/profile",loadCurrentUser,validate(updateDto),userController.updateUser)
+router.delete("/profile",loadCurrentUser,userController.deleteUser);
 
 export default router;
 

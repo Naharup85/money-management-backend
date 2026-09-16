@@ -6,8 +6,8 @@ import * as accountController from "./controller.js";
 
 const router = Router();
 
-router.post("/create", validate(accountSchema), accountController.createAccount);
-router.get("/:userId", accountController.getUserAccounts);
+router.post("", validate(accountSchema), accountController.createAccount);
+router.get("", accountController.getUserAccounts);
 router.patch("/:accountId", validate(updateAccountSchema), accountController.updateAccount);
 router.delete("/:accountId", accountController.deleteAccount);
 

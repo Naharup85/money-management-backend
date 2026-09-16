@@ -1,0 +1,1 @@
+ALTER TABLE "users" DROP COLUMN "cash_balance";

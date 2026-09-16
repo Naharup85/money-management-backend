@@ -1,7 +1,6 @@
 import {z} from "zod"
 
 const recordSchema=z.object({
-    id:z.string(),
     description:z.string().optional(),
     amount:z.number(),
     fromAccountId:z.string(),

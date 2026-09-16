@@ -51,7 +51,6 @@ const updateDto = z.object({
         }),
     email: z.email("Please provide a valid email")
         .max(225, "Email must be at most 225 characters long"),
-    cashBalance: z.coerce.number().optional().default(0),
     profilePicture: z.string().optional(),
     sub: z.string()
     .min(3,

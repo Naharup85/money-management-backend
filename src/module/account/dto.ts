@@ -12,7 +12,7 @@ const accountSchema=z.object({
             message: "Account name must be at most 100 characters long"
         }
     ),
-    color:z.string().length(8, ""),
+    color:z.string().min(3, "length is very less").max(10,"length must less then 10"),
     type: z.enum(["bank", "card", "cash", "credit_card", "investment", "other"]),
     balance: z.coerce.number().optional().default(0),
     userId: z.string().min(1,"User ID is required"),
@@ -31,7 +31,7 @@ const updateAccountSchema=z.object({
         }
     )
     .optional(),
-    color:z.string().length(8, "").optional(),
+    color:z.string().min(3, "length is very less").max(10,"length must less then 10").optional(),
     type: z.enum(["bank", "card", "cash", "credit_card", "investment", "other"]).optional(),
     balance: z.coerce.number().optional().default(0),
     userId: z.string().min(1,"User ID is required").optional(),

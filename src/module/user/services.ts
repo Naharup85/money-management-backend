@@ -6,6 +6,8 @@ import ApiError from "../../common/utility/apiErrors.js";
 import { db } from "../../index.js"
 import { usersTable } from "../../db/schema/users.js";
 import ApiResponse from "../../common/utility/apiResponse.js";
+import * as accountServices from "../account/services.js";
+
 
 const getDefaultAvatar=(firstName: string, lastName: string)=>{
   const seed = encodeURIComponent(`${firstName} ${lastName}`);
@@ -24,10 +26,17 @@ const register=async(userData: UserRegisterDto)=>{
         firstName:userData.firstName,
         lastName:userData.lastName,
         email:userData.email,
-        cashBalance: userData.cashBalance?.toString(),
         profilePicture:userData.profilePicture,
         logtoId:userData.sub,
     }).returning({"id":usersTable.id});
+
+    const account=await accountServices.createAccount({
+        userId:user[0]?.id!,
+        name:"Cash",
+        type:"cash",
+        color:"#000000ff",
+        balance:userData.cashBalance,
+    });
     return user;
 }
 
@@ -38,12 +47,12 @@ const getUser=async(logtoId: string)=>{
     if(!user ||user.length===0){
         throw ApiError.notFound("User data not found");
     }
+
     return {
             id:user[0]?.id,
             firstName:user[0]?.firstName,
             lastName:user[0]?.lastName,
             email:user[0]?.email,
-            cashBalance:user[0]?.cashBalance,
             profilePicture:user[0]?.profilePicture,
             createdAt:user[0]?.createdAt,
             updatedAt:user[0]?.updatedAt
@@ -59,7 +68,6 @@ const updateUser=async(userId: string,userData: UserUpdateDto)=>{
         firstName:userData.firstName,
         lastName:userData.lastName,
         email:userData.email,
-        cashBalance: userData.cashBalance?.toString(),
         profilePicture:userData.profilePicture,
         logtoId:userData.sub,
     }).where(eq(usersTable.id,userId)).returning();
@@ -68,7 +76,6 @@ const updateUser=async(userId: string,userData: UserUpdateDto)=>{
             firstName:updatedUser[0]?.firstName,
             lastName:updatedUser[0]?.lastName,
             email:updatedUser[0]?.email,
-            cashBalance:updatedUser[0]?.cashBalance,
             profilePicture:updatedUser[0]?.profilePicture,
             updatedAt:updatedUser[0]?.updatedAt
     };

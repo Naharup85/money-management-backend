@@ -30,6 +30,11 @@ export const requireAuth = async (
   next: NextFunction
 ) => {
   try {
+    if (req.method === "OPTIONS") {
+      next();
+      return;
+    }
+
   
     const authorization = req.headers.authorization;
 

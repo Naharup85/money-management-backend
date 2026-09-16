@@ -10,19 +10,19 @@ const createAccount=async(req:Request,res:Response)=>{
 
 
 const getUserAccounts=async(req:Request,res:Response)=>{
-    const userId = req.params.userId as string;
+    const userId = req.user?.id as string;
     const accounts=await accountService.getUserAccounts(userId);
-    ApiResponse.create(res,accounts,"Accounts Fetched Successfully");
+    ApiResponse.success(res,accounts,"Accounts Fetched Successfully");
 }
 
 const updateAccount=async(req:Request,res:Response)=>{
     const account=await accountService.updateAccount(req.params.accountId as string,req.body);
-    ApiResponse.create(res,account,"Account Updated Successfully");
+    ApiResponse.success(res,account,"Account Updated Successfully");
 }
 
 const deleteAccount=async(req:Request,res:Response)=>{
     await accountService.deleteAccount(req.params.accountId as string);
-    ApiResponse.create(res,null,"Account Deleted Successfully");
+    ApiResponse.success(res,null,"Account Deleted Successfully");
 }
 
 
