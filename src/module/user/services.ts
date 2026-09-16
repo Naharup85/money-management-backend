@@ -30,13 +30,18 @@ const register=async(userData: UserRegisterDto)=>{
         logtoId:userData.sub,
     }).returning({"id":usersTable.id});
 
-    const account=await accountServices.createAccount({
-        userId:user[0]?.id!,
-        name:"Cash",
-        type:"cash",
-        color:"#000000ff",
-        balance:userData.cashBalance,
-    });
+    try {
+        const account=await accountServices.createAccount({
+            userId: user[0]?.id!,
+            name: "Cash",
+            type: "cash",
+            balance: userData.cashBalance,
+            color:"#83b5f0ff"
+        });
+    } catch (error) {
+        await db.delete(usersTable).where(eq(usersTable.id,user[0]?.id!));
+        throw ApiError.internalServerError("Failed to create account");
+    }
     return user;
 }
 
@@ -82,10 +87,8 @@ const updateUser=async(userId: string,userData: UserUpdateDto)=>{
 }
 
 const deleteUser=async(userId: string)=>{
-    const user=await db.delete(usersTable).where(eq(usersTable.id,userId));
-    if(!user){
-        throw ApiError.notFound("User data not found");
-    }
+    await db.delete(usersTable).where(eq(usersTable.id,userId));
+    
     return;
 }
 

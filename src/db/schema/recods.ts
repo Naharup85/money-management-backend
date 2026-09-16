@@ -8,11 +8,11 @@ export const paymentStatusEnum = pgEnum("payment_status", ["cleared", "pending"]
 
 export const recordsTable = pgTable("records", {
     id: uuid("id").defaultRandom().primaryKey(),
-    fromAccountId: uuid("from_account_id").notNull().references(() => accountsTable.id),
-    toAccountId: uuid("to_account_id").references(() => accountsTable.id),
+    fromAccountId: uuid("from_account_id").notNull().references(() => accountsTable.id,{onDelete:'cascade'}),
+    toAccountId: uuid("to_account_id").references(() => accountsTable.id,{onDelete:'cascade'}),
     amount: decimal("amount",{precision:14,scale:2}).notNull().default('0.00'),
     type: recordTypeEnum("type").default("expense"),
-    category: integer("category").notNull().references(() => categoriesTable.id),
+    category: integer("category").notNull().references(() => categoriesTable.id,{onDelete:'cascade'}),
     description: varchar("description", { length: 255 }),
     date: timestamp('date').notNull().defaultNow(),
     note: varchar("note", { length: 255 }),

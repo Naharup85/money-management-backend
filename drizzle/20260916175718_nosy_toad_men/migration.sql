@@ -1,0 +1,4 @@
+ALTER TABLE "accounts" DROP CONSTRAINT "accounts_user_id_users_id_fkey", ADD CONSTRAINT "accounts_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "records" DROP CONSTRAINT "records_from_account_id_accounts_id_fkey", ADD CONSTRAINT "records_from_account_id_accounts_id_fkey" FOREIGN KEY ("from_account_id") REFERENCES "accounts"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "records" DROP CONSTRAINT "records_to_account_id_accounts_id_fkey", ADD CONSTRAINT "records_to_account_id_accounts_id_fkey" FOREIGN KEY ("to_account_id") REFERENCES "accounts"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "records" DROP CONSTRAINT "records_category_categories_id_fkey", ADD CONSTRAINT "records_category_categories_id_fkey" FOREIGN KEY ("category") REFERENCES "categories"("id") ON DELETE CASCADE;

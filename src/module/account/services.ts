@@ -10,6 +10,7 @@ const createAccount = async (payload: AccountDto) => {
     if (!user) {
         throw new Error("User not found");
     }
+    
     const account = await db.insert(accountsTable).values({
         userId: userId,
         accountName: payload.name,

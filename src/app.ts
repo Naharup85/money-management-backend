@@ -14,7 +14,6 @@ import { env } from "./common/config/env.js";
 const BASE_PATH = "/api/v1";
 const CORS_ORIGINS = env.CORS.split(",").map((origin:string) => origin.trim());
 
-console.log("Cors origins", CORS_ORIGINS);
 
 
 const createApplicationServer = (): Application => {
