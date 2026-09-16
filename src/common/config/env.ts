@@ -6,7 +6,7 @@ dotenv.config();
 
 const envSchema = z.object({
     PORT: z.string().transform((val) => parseInt(val, 10)),
-    CORS_ORIGINS: z.string().default("https://money-management-frontend-beta.vercel.app,https://2jsn8mz6-3000.inc1.devtunnels.ms"),
+    CORS: z.string(),
     LOGTO_ENDPOINT: z.string(),
     LOGTO_APP_ID: z.string(),
     LOGTO_APP_SECRET: z.string(),
