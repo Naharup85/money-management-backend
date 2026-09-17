@@ -78,7 +78,7 @@ export const requireAuth = async (
 
     next();
   } catch (error) {
-    console.error("Logto authentication error:", error);
+    
 
     throw ApiError.unAuthorized("Invalid or expired access token");
   }

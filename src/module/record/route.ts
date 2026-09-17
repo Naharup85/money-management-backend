@@ -8,7 +8,7 @@ const router=Router();
 
 router.post("/",validate(recordSchema),RecordController.createRecord);
 router.get("/",RecordController.getAllRecords);
-router.patch("/:id",validate(recordSchema),RecordController.updateRecord);
+router.put("/:id",validate(recordSchema),RecordController.updateRecord);
 router.get("/:id",RecordController.getRecord);
 router.delete("/:id",RecordController.deleteRecord);
 

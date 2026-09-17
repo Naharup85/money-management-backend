@@ -97,8 +97,7 @@ const performTransactions = async (fromAccountId: string, toAccountId: string | 
     });
 };
 
-const createRecord= async(paylod:RecordDto)=>{
-    console.log("paylod",paylod);
+const createRecord= async(paylod:RecordDto)=>{;
    try {
      const fromAccountId=paylod.fromAccountId;
      const toAccountId=paylod.toAccountId || null;
@@ -144,14 +143,12 @@ const createRecord= async(paylod:RecordDto)=>{
          paymentStatus: record[0].paymentStatus!,
      };
    } catch (error) {
-    console.log("error",error);
     throw ApiError.internalServerError("Something went wrong");
    }
 }
 
 const getAllRecords=async(userId:string)=>{
     const records=await db.select().from(recordsTable).where(eq(recordsTable.createdBy,userId)).orderBy(desc(recordsTable.date));
-    console.log("records",records);
     return records.map((record)=>{
         return{
             id:record.id,

@@ -13,7 +13,7 @@ async function Main() {
  
      const PORT = env.PORT || 3000;
      server.listen(PORT, () => {
-         console.log(`Server is running on port ${PORT}`);
+
      })
    } catch (error) {
     throw ApiError.internalServerError("unable to start server");

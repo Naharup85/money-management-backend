@@ -17,7 +17,6 @@ const envSchema = z.object({
 export const env = (() => {
     const result = envSchema.safeParse(process.env);
     if (!result.success) {
-        console.error("Environment validation failed:", result.error.message);
         throw ApiError.internalServerError("Invalid environment configuration");
     }
     return result.data;

@@ -68,7 +68,7 @@ const updateAccount=async(accountId:string,payload:UpdateAccountDto)=>{
 }
 
 const deleteAccount=async(accountId:string)=>{
-    console.log("account id",accountId)
+    
     const account=await db.delete(accountsTable).where(eq(accountsTable.id,accountId));
     if(!account){
         throw new Error("Account not found");
