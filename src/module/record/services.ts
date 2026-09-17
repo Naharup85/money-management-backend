@@ -16,6 +16,7 @@ const toDbRecord = (paylod: RecordDto) => ({
     date: new Date(paylod.date),
     note: paylod.note,
     payer: paylod.payer,
+    createdBy:paylod.userId,
     paymentType: paylod.paymentType,
     paymentStatus: paylod.paymentStatus,
 });
@@ -32,6 +33,7 @@ const toDbUpdateRecord = (paylod: UpdateRecordDto) => ({
     payer: paylod.payer,
     paymentType: paylod.paymentType,
     paymentStatus: paylod.paymentStatus,
+    createdBy:paylod.userId,
 });
 
 
@@ -96,6 +98,7 @@ const performTransactions = async (fromAccountId: string, toAccountId: string | 
 };
 
 const createRecord= async(paylod:RecordDto)=>{
+    console.log("paylod",paylod);
    try {
      const fromAccountId=paylod.fromAccountId;
      const toAccountId=paylod.toAccountId || null;
@@ -146,8 +149,9 @@ const createRecord= async(paylod:RecordDto)=>{
    }
 }
 
-const getAllRecords=async()=>{
-    const records=await db.select().from(recordsTable).orderBy(desc(recordsTable.date));
+const getAllRecords=async(userId:string)=>{
+    const records=await db.select().from(recordsTable).where(eq(recordsTable.createdBy,userId)).orderBy(desc(recordsTable.date));
+    console.log("records",records);
     return records.map((record)=>{
         return{
             id:record.id,

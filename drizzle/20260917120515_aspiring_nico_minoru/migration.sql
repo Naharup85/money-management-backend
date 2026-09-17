@@ -1,0 +1,2 @@
+ALTER TABLE "records" ADD COLUMN "created_by" uuid;--> statement-breakpoint
+ALTER TABLE "records" ADD CONSTRAINT "records_created_by_users_id_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL;

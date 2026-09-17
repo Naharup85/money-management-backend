@@ -1,0 +1,3 @@
+ALTER TABLE "records" DROP CONSTRAINT "records_from_account_id_accounts_id_fkey", ADD CONSTRAINT "records_from_account_id_accounts_id_fkey" FOREIGN KEY ("from_account_id") REFERENCES "accounts"("id");--> statement-breakpoint
+ALTER TABLE "records" DROP CONSTRAINT "records_to_account_id_accounts_id_fkey", ADD CONSTRAINT "records_to_account_id_accounts_id_fkey" FOREIGN KEY ("to_account_id") REFERENCES "accounts"("id") ON DELETE SET NULL;--> statement-breakpoint
+ALTER TABLE "records" DROP CONSTRAINT "records_category_categories_id_fkey", ADD CONSTRAINT "records_category_categories_id_fkey" FOREIGN KEY ("category") REFERENCES "categories"("id");

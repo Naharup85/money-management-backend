@@ -10,7 +10,7 @@ const createRecord=async(req:Request,res:Response)=>{
 }
 
 const getAllRecords=async(req:Request,res:Response)=>{
-    const data=await RecordService.getAllRecords();
+    const data=await RecordService.getAllRecords(req.user?.id as string);
     return ApiResponse.success(res,data,"Records fetched successfully");
 
 }

@@ -12,6 +12,7 @@ const recordSchema=z.object({
     paymentType:z.enum(["cash", "bank", "card", "upi"]),
     paymentStatus:z.enum(["cleared", "pending"]),
     note:z.string().optional(),
+    userId:z.string(),
 });
 
 
@@ -27,6 +28,7 @@ const updateRecordSchema=z.object({
     paymentType:z.enum(["cash", "bank", "card", "upi"]),
     paymentStatus:z.enum(["cleared", "pending"]),
     note:z.string().optional(),
+    userId:z.string(),
 });
 
 type RecordDto=z.infer<typeof recordSchema>

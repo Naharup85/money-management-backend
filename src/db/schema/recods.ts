@@ -1,6 +1,7 @@
 import { boolean, uuid, decimal,integer, pgTable, varchar, timestamp, pgEnum } from "drizzle-orm/pg-core";
 import { accountsTable } from "./accounts.js";
 import { categoriesTable } from "./categories.js";
+import { usersTable } from "./users.js";
 
 export const recordTypeEnum = pgEnum("transaction_type", ["income", "expense", "transfer"]);
 export const paymentTypeEnum = pgEnum("payment_type", ["cash", "bank", "card", "upi"]);
@@ -8,11 +9,12 @@ export const paymentStatusEnum = pgEnum("payment_status", ["cleared", "pending"]
 
 export const recordsTable = pgTable("records", {
     id: uuid("id").defaultRandom().primaryKey(),
-    fromAccountId: uuid("from_account_id").notNull().references(() => accountsTable.id,{onDelete:'cascade'}),
-    toAccountId: uuid("to_account_id").references(() => accountsTable.id,{onDelete:'cascade'}),
+    fromAccountId: uuid("from_account_id").notNull().references(() => accountsTable.id),
+    toAccountId: uuid("to_account_id").references(() => accountsTable.id,{onDelete:'set null'}),
     amount: decimal("amount",{precision:14,scale:2}).notNull().default('0.00'),
     type: recordTypeEnum("type").default("expense"),
-    category: integer("category").notNull().references(() => categoriesTable.id,{onDelete:'cascade'}),
+    category: integer("category").notNull().references(() => categoriesTable.id),
+    createdBy: uuid("created_by").references(() => usersTable.id,{onDelete:'set null'}),
     description: varchar("description", { length: 255 }),
     date: timestamp('date').notNull().defaultNow(),
     note: varchar("note", { length: 255 }),
